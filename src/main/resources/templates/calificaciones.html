@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion Calificaciones</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body class="container py-5">
+<h1 class="mb-4">Gestion Calificaciones</h1>
+<button class="btn btn-outline-primary mb-3" id="listarEstudiantes">Listar Estudiantes</button>
+<table class="table" id="tablaEstudiantes">
+    <thead>
+    <tr><th>ID</th><th>Nombre</th></tr>
+    </thead>
+    <tbody></tbody>
+</table>
+<h2>Crear Estudiante</h2>
+<form id="formEstudiante" class="row g-3">
+    <div class="col-md-6">
+        <label class="form-label">Nombre</label>
+        <input type="text" class="form-control" id="nombre">
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Guardar</button>
+    </div>
+</form>
+<script>
+$(function(){
+    $('#listarEstudiantes').click(function(){
+        $.get('/api/students', function(data){
+            var tbody = $('#tablaEstudiantes tbody');
+            tbody.empty();
+            data.forEach(function(est){
+                var row = '<tr><td>'+est.id+'</td><td>'+est.name+'</td></tr>';
+                tbody.append(row);
+            });
+        });
+    });
+
+    $('#formEstudiante').submit(function(e){
+        e.preventDefault();
+        var estudiante = { name: $('#nombre').val() };
+        $.ajax({
+            url: '/api/students',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(estudiante),
+            success: function(){
+                alert('Estudiante creado');
+                $('#listarEstudiantes').click();
+            }
+        });
+    });
+});
+</script>
+</body>
+</html>
